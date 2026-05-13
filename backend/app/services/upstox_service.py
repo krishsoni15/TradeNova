@@ -195,7 +195,11 @@ async def exchange_upstox_code(code: str) -> dict[str, Any]:
                 "redirect_uri": settings.UPSTOX_REDIRECT_URI,
                 "grant_type": "authorization_code",
             },
-            headers={"Content-Type": "application/x-www-form-urlencoded"},
+            headers={
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Accept": "application/json",
+                "Api-Version": "2.0",
+            },
         )
         response.raise_for_status()
         return response.json()
@@ -206,7 +210,11 @@ async def get_upstox_profile(access_token: str) -> dict[str, Any]:
     async with httpx.AsyncClient() as client:
         response = await client.get(
             f"{UPSTOX_BASE_URL}/user/profile",
-            headers={"Authorization": f"Bearer {access_token}"},
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Accept": "application/json",
+                "Api-Version": "2.0",
+            },
         )
         response.raise_for_status()
         return response.json().get("data", {})
@@ -222,7 +230,11 @@ async def get_holdings(access_token: str | None = None) -> HoldingsResponse:
             async with httpx.AsyncClient() as client:
                 response = await client.get(
                     f"{UPSTOX_BASE_URL}/portfolio/long-term-holdings",
-                    headers={"Authorization": f"Bearer {access_token}"},
+                    headers={
+                        "Authorization": f"Bearer {access_token}",
+                        "Accept": "application/json",
+                        "Api-Version": "2.0",
+                    },
                 )
                 response.raise_for_status()
                 data = response.json().get("data", [])
@@ -230,30 +242,47 @@ async def get_holdings(access_token: str | None = None) -> HoldingsResponse:
                 # Transform Upstox response to our schema
                 holdings = []
                 for item in data:
-                    invested = item.get("average_price", 0) * item.get("quantity", 0)
-                    current = item.get("last_price", 0) * item.get("quantity", 0)
+                    total_quantity = item.get("quantity") or 0
+                    cnc_used = item.get("cnc_used_quantity") or 0
+                    net_quantity = total_quantity - cnc_used
+
+                    if net_quantity <= 0:
+                        continue  # Skip holdings that have been completely sold today
+
+                    avg_price = item.get("average_price") or 0
+                    last_price = item.get("last_price") or 0
+                    close_price = item.get("close_price") or 0
+                    
+                    invested = avg_price * net_quantity
+                    current = last_price * net_quantity
                     pnl = current - invested
+
+                    if close_price <= 0:
+                        close_price = last_price
+
+                    day_change = last_price - close_price
+                    day_change_percentage = (day_change / close_price * 100) if close_price > 0 else 0
 
                     holdings.append({
                         "tradingsymbol": item.get("tradingsymbol", ""),
                         "exchange": item.get("exchange", "NSE"),
                         "isin": item.get("isin", ""),
                         "company_name": item.get("company_name", item.get("tradingsymbol", "")),
-                        "quantity": item.get("quantity", 0),
-                        "t1_quantity": item.get("t1_quantity", 0),
-                        "average_price": item.get("average_price", 0),
-                        "last_price": item.get("last_price", 0),
-                        "close_price": item.get("close_price", 0),
+                        "quantity": net_quantity,
+                        "t1_quantity": item.get("t1_quantity") or 0,
+                        "average_price": avg_price,
+                        "last_price": last_price,
+                        "close_price": close_price,
                         "pnl": pnl,
                         "pnl_percentage": (pnl / invested * 100) if invested else 0,
-                        "day_change": item.get("day_change", 0),
-                        "day_change_percentage": item.get("day_change_percentage", 0),
+                        "day_change": day_change,
+                        "day_change_percentage": day_change_percentage,
                         "current_value": current,
                         "invested_value": invested,
                     })
 
                 return HoldingsResponse(
-                    holdings=[HoldingItem(**h) for h in holdings],
+                    holdings=[HoldingItem.model_validate(h) for h in holdings],
                     summary=_compute_summary(holdings),
                 )
 
@@ -263,6 +292,6 @@ async def get_holdings(access_token: str | None = None) -> HoldingsResponse:
     # Fallback to mock data
     logger.info("Using mock holdings data")
     return HoldingsResponse(
-        holdings=[HoldingItem(**h) for h in MOCK_HOLDINGS_DATA],
+        holdings=[HoldingItem.model_validate(h) for h in MOCK_HOLDINGS_DATA],
         summary=_compute_summary(MOCK_HOLDINGS_DATA),
     )
