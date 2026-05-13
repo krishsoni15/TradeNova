@@ -1,0 +1,3 @@
+"""
+TradeNova Backend — App Package
+"""
