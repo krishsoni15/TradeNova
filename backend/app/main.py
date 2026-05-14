@@ -29,14 +29,17 @@ async def lifespan(app: FastAPI):
     logger.info(f"   Debug mode: {settings.DEBUG}")
     logger.info(f"   Upstox API: {'configured' if settings.UPSTOX_API_KEY else 'mock mode'}")
     
-    # Create DB tables
-    from app.database import engine
-    from app.models.base import Base
-    # Import all models here so they are registered with Base
-    from app.models.user import User
-    
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    try:
+        # Create DB tables
+        from app.database import engine
+        from app.models.base import Base
+        # Import all models here so they are registered with Base
+        from app.models.user import User
+        
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+    except Exception as e:
+        logger.warning(f"Could not connect to database (URL might be localhost). DB features will fail: {e}")
         
     yield
     logger.info("👋 TradeNova Backend shutting down...")
