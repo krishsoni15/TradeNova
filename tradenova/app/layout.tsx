@@ -40,7 +40,7 @@ export default function RootLayout({
       // Force dark mode always — trading terminal aesthetic
       className={`${inter.variable} ${geistMono.variable} dark h-full antialiased`}
     >
-      <body className="min-h-full bg-background text-foreground">
+      <body className="min-h-full bg-background text-foreground overflow-x-hidden">
         <QueryProvider>
           <TooltipProvider>
             {children}

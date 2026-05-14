@@ -15,7 +15,31 @@ from app.services.auth_service import create_access_token
 from app.services import upstox_service
 from app.middleware.auth_middleware import get_current_user
 
+from app.config import get_settings
+
 router = APIRouter(prefix="/auth", tags=["Authentication"])
+settings = get_settings()
+
+@router.get("/upstox/login")
+async def get_upstox_login_url():
+    """
+    Returns the Upstox OAuth authorization URL.
+    The frontend should redirect the user to this URL.
+    """
+    client_id = settings.UPSTOX_API_KEY
+    redirect_uri = settings.UPSTOX_REDIRECT_URI
+    
+    if not client_id:
+        raise HTTPException(status_code=500, detail="Upstox API keys not configured")
+        
+    auth_url = (
+        f"https://api.upstox.com/v2/login/authorization/dialog"
+        f"?response_type=code"
+        f"&client_id={client_id}"
+        f"&redirect_uri={redirect_uri}"
+    )
+    
+    return {"url": auth_url}
 
 
 @router.post("/upstox/callback", response_model=APIResponse[TokenResponse])

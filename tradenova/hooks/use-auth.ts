@@ -20,8 +20,8 @@ export function useAuth() {
   });
 
   /** Redirect to Upstox OAuth */
-  const redirectToUpstox = () => {
-    const url = authService.getUpstoxAuthUrl();
+  const redirectToUpstox = async () => {
+    const url = await authService.getUpstoxAuthUrl();
     window.location.href = url;
   };
 

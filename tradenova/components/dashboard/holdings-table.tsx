@@ -17,6 +17,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { formatCurrency, formatPercentage } from "@/lib/constants";
@@ -178,6 +179,7 @@ export function HoldingsTable({ holdings }: HoldingsTableProps) {
                 >
                   Day Change
                 </SortableHeader>
+                <TableHead className="w-[80px] text-right"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -194,7 +196,7 @@ export function HoldingsTable({ holdings }: HoldingsTableProps) {
                     animate="show"
                     className={cn(
                       "group border-border/30 transition-colors",
-                      "hover:bg-accent/30"
+                      "hover:bg-white/5"
                     )}
                   >
                     {/* Stock name + symbol */}
@@ -272,6 +274,18 @@ export function HoldingsTable({ holdings }: HoldingsTableProps) {
                           <TrendingDown className="h-3 w-3" />
                         )}
                         {formatPercentage(holding.day_change_percentage)}
+                      </div>
+                    </TableCell>
+
+                    {/* Quick Actions (visible on hover) */}
+                    <TableCell className="text-right py-2">
+                      <div className="flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                        <Button size="sm" variant="outline" className="h-7 w-7 p-0 bg-transparent border-profit/30 text-profit hover:bg-profit/10 hover:text-profit">
+                          B
+                        </Button>
+                        <Button size="sm" variant="outline" className="h-7 w-7 p-0 bg-transparent border-loss/30 text-loss hover:bg-loss/10 hover:text-loss">
+                          S
+                        </Button>
                       </div>
                     </TableCell>
                   </motion.tr>

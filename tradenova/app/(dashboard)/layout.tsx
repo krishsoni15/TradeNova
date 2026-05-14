@@ -3,6 +3,7 @@
 import { Sidebar } from "@/components/layout/sidebar";
 import { TopNavbar } from "@/components/layout/top-navbar";
 import { MobileNav } from "@/components/layout/mobile-nav";
+import { MarketTicker } from "@/components/dashboard/market-ticker";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useUIStore } from "@/stores/ui-store";
 import { cn } from "@/lib/utils";
@@ -30,13 +31,16 @@ export default function DashboardLayout({
       {/* Main content area — shifts based on sidebar width */}
       <div
         className={cn(
-          "flex flex-1 flex-col transition-all duration-300 ease-in-out",
-          "lg:ml-[260px]",
-          sidebarCollapsed && "lg:ml-[72px]"
+          "flex flex-col transition-all duration-300 ease-in-out min-h-screen",
+          "w-full lg:w-[calc(100%-260px)] lg:ml-[260px]",
+          sidebarCollapsed && "lg:w-[calc(100%-72px)] lg:ml-[72px]"
         )}
       >
         {/* Top navigation bar */}
         <TopNavbar />
+
+        {/* Live scrolling stock ticker */}
+        <MarketTicker />
 
         {/* Page content */}
         <ScrollArea className="flex-1">

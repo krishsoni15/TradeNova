@@ -1,224 +1,113 @@
-# 🚀 TradeNova — Premium Trading Dashboard
+# TradeNova 🌌
 
-A production-grade trading dashboard built with Next.js 15, FastAPI, and Upstox API integration.
+A production-grade, highly performant trading dashboard built with a modern technology stack. It provides real-time portfolio tracking, beautiful dark-themed aesthetics, and a seamless connection to the Upstox broker API.
 
-> **Phase 1** — Foundation + Upstox Integration + Holdings Dashboard
+![TradeNova Dashboard](https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&q=80&w=2070&ixlib=rb-4.0.3)
 
-![Dashboard](https://img.shields.io/badge/Status-Phase%201%20Complete-brightgreen)
-![Next.js](https://img.shields.io/badge/Next.js-16.2-black)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6)
-![License](https://img.shields.io/badge/License-Private-red)
+## 🚀 Features
 
----
-
-## ✨ Features (Phase 1)
-
-- 🎨 **Premium Dark Trading Terminal UI** — TradingView/Binance-inspired design
-- 📊 **Portfolio Summary Cards** — Total investment, current value, P&L, day change
-- 📋 **Holdings Table** — Sortable, color-coded, with animated row entrance
-- 🔐 **JWT Authentication** — Secure token-based auth structure
-- 🔗 **Upstox Integration** — OAuth2 flow + Holdings API
-- 📱 **Fully Responsive** — Desktop sidebar, mobile sheet navigation
-- ⚡ **Mock Data Fallback** — Works immediately without Upstox credentials
-- 🌐 **WebSocket Ready** — Scaffold for live market data streaming
-- 🎭 **Smooth Animations** — Framer Motion throughout
-- 🧩 **Glassmorphism UI** — Modern glass-effect cards and panels
+- **Upstox Broker Integration**: Securely connect to your Upstox account using OAuth 2.0 to fetch live holdings and portfolio data.
+- **Dark Trading Terminal**: Built with Tailwind CSS v4, utilizing glassmorphism, smooth animations, and neon accents.
+- **Accurate Mathematical P&L**: Automatically calculates Net Quantity (excluding T1 unsettled day trades) and precise Day Change logic.
+- **Blazing Fast Backend**: Powered by FastAPI, Uvicorn, and an asynchronous PostgreSQL database.
+- **Seamless React Frontend**: Built on Next.js 16 (App Router), Zustand, TanStack Query, and Framer Motion.
 
 ---
 
-## 🏗️ Tech Stack
+## 🛠️ Tech Stack
 
 ### Frontend
-| Technology | Purpose |
-|---|---|
-| Next.js 16 (App Router) | Framework + SSR |
-| TypeScript | Type safety |
-| Tailwind CSS v4 | Styling |
-| shadcn/ui | Component library |
-| Framer Motion | Animations |
-| TanStack Query | Server state |
-| Zustand | Client state |
-| Axios | HTTP client |
-| Lucide React | Icons |
+- **Next.js 16** (React 19)
+- **TypeScript**
+- **Tailwind CSS v4**
+- **shadcn/ui** (Base UI)
+- **Framer Motion**
+- **Zustand** & **TanStack Query**
 
 ### Backend
-| Technology | Purpose |
-|---|---|
-| FastAPI | REST API |
-| PostgreSQL | Database |
-| SQLAlchemy (async) | ORM |
-| JWT (python-jose) | Authentication |
-| httpx | Upstox API calls |
-| Pydantic Settings | Configuration |
+- **FastAPI** (Python 3.12)
+- **SQLAlchemy** (Asyncpg)
+- **PostgreSQL**
+- **Alembic** (Database Migrations)
+- **HTTPX** & **PyJWT**
 
 ---
 
-## 📁 Project Structure
+## 🐳 Running with Docker (Recommended)
 
-```
-trading app/
-├── tradenova/                      # Next.js Frontend
-│   ├── app/
-│   │   ├── (auth)/
-│   │   │   ├── login/page.tsx      # Upstox login page
-│   │   │   └── layout.tsx          # Auth layout (gradient bg)
-│   │   ├── (dashboard)/
-│   │   │   ├── layout.tsx          # Dashboard shell (sidebar + navbar)
-│   │   │   ├── page.tsx            # Dashboard home
-│   │   │   └── holdings/page.tsx   # Holdings detail page
-│   │   ├── globals.css             # Dark trading terminal theme
-│   │   └── layout.tsx              # Root layout (providers)
-│   ├── components/
-│   │   ├── ui/                     # shadcn/ui primitives (11 components)
-│   │   ├── layout/
-│   │   │   ├── sidebar.tsx         # Collapsible glassmorphism sidebar
-│   │   │   ├── top-navbar.tsx      # Search, notifications, user menu
-│   │   │   └── mobile-nav.tsx      # Sheet-based mobile navigation
-│   │   ├── dashboard/
-│   │   │   ├── portfolio-summary.tsx  # 4 summary cards with animations
-│   │   │   ├── holdings-table.tsx     # Sortable data table
-│   │   │   └── holdings-skeleton.tsx  # Skeleton loading state
-│   │   └── shared/
-│   │       ├── logo.tsx            # Animated brand logo
-│   │       └── empty-state.tsx     # Reusable empty state
-│   ├── hooks/                      # Custom React hooks
-│   ├── services/                   # API service layer
-│   ├── stores/                     # Zustand state stores
-│   ├── providers/                  # React context providers
-│   ├── types/                      # TypeScript type definitions
-│   └── lib/                        # Utilities & constants
-│
-└── backend/                        # FastAPI Backend
-    ├── app/
-    │   ├── main.py                 # App entry + CORS + health
-    │   ├── config.py               # Pydantic Settings
-    │   ├── database.py             # Async SQLAlchemy
-    │   ├── routes/                 # API endpoints
-    │   │   ├── auth.py             # Upstox OAuth + JWT
-    │   │   ├── holdings.py         # Portfolio holdings
-    │   │   └── ws.py               # WebSocket scaffold
-    │   ├── services/               # Business logic
-    │   │   ├── auth_service.py     # JWT create/verify
-    │   │   └── upstox_service.py   # Upstox API + mock data
-    │   ├── models/                 # SQLAlchemy models
-    │   ├── schemas/                # Pydantic schemas
-    │   └── middleware/             # Auth middleware
-    ├── requirements.txt
-    └── .env.example
-```
+The easiest way to run TradeNova is using Docker Compose.
+
+1. Ensure you have Docker and Docker Compose installed.
+2. Create a `.env` file in the root directory and add your Upstox credentials:
+   ```env
+   UPSTOX_API_KEY=your_actual_api_key
+   UPSTOX_API_SECRET=your_actual_api_secret
+   ```
+3. Run the complete stack:
+   ```bash
+   docker-compose up -d --build
+   ```
+4. Access the application:
+   - Frontend: [http://localhost:3000](http://localhost:3000)
+   - Backend API Docs: [http://localhost:8000/docs](http://localhost:8000/docs)
+
+*(Note: On the first run, ensure the database is initialized by running migrations manually or let Alembic auto-generate on startup if configured).*
 
 ---
 
-## 🚀 Quick Start
+## 💻 Local Development Setup
 
-### Prerequisites
-- Node.js 20+ (LTS)
-- Python 3.11+
-- PostgreSQL (optional — mock data works without it)
-
-### Frontend Setup
-
+### 1. Database (PostgreSQL)
+Ensure you have PostgreSQL installed and running.
 ```bash
-# Navigate to frontend
-cd tradenova
-
-# Install dependencies (already done)
-npm install
-
-# Start development server
-npm run dev
+sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';"
+sudo -u postgres psql -c "CREATE DATABASE tradenova;"
 ```
 
-The frontend runs at **http://localhost:3000** with mock data — no backend required!
-
-### Backend Setup
-
+### 2. Backend Setup
 ```bash
-# Navigate to backend
 cd backend
-
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-# venv\Scripts\activate   # Windows
-
-# Install dependencies
+python3 -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt
-
-# Copy environment file
 cp .env.example .env
-# Edit .env with your credentials
+```
+*Edit the `.env` file with your Upstox credentials.*
 
-# Run the server
+Initialize the database:
+```bash
+alembic upgrade head
+```
+
+Run the server:
+```bash
 uvicorn app.main:app --reload --port 8000
 ```
 
-The API runs at **http://localhost:8000** with docs at **/api/docs**.
+### 3. Frontend Setup
+```bash
+cd tradenova
+npm install
+cp .env.example .env.local
+```
+*Edit `.env.local` to include your `NEXT_PUBLIC_UPSTOX_API_KEY`.*
 
-### Upstox Setup (Optional)
-
-1. Visit [Upstox Developer Portal](https://account.upstox.com/developer/apps)
-2. Create a new app
-3. Set redirect URI to `http://localhost:3000/auth/callback`
-4. Copy API Key and Secret to your `.env` file
-
----
-
-## 🎨 Design System
-
-| Token | Value | Usage |
-|---|---|---|
-| `--background` | Deep charcoal | Page backgrounds |
-| `--primary` | Neon green | Accents, CTAs, profit indicators |
-| `--destructive` | Warm red | Loss indicators, errors |
-| `--glass` | 4% white | Glassmorphism cards |
-| `--profit` | Green | Positive P&L |
-| `--loss` | Red | Negative P&L |
-
-### Custom CSS Classes
-- `.glass` — Glassmorphism with blur
-- `.glass-strong` — Stronger glass effect
-- `.glow-profit` / `.glow-loss` — Glow box shadows
-- `.gradient-mesh` — Animated gradient background
-- `.tabular-nums` — Monospaced numbers for alignment
+Run the development server:
+```bash
+npm run dev
+```
 
 ---
 
-## 📡 API Endpoints
-
-| Method | Endpoint | Auth | Description |
-|---|---|---|---|
-| `GET` | `/api/v1/health` | ❌ | Health check |
-| `POST` | `/api/v1/auth/upstox/callback` | ❌ | Exchange Upstox code for JWT |
-| `GET` | `/api/v1/auth/me` | ✅ | Get current user profile |
-| `GET` | `/api/v1/holdings` | ✅ | Get portfolio holdings |
-| `GET` | `/api/v1/holdings/mock` | ❌ | Get mock holdings (dev) |
-| `WS` | `/ws/market` | ❌ | WebSocket scaffold |
-
----
-
-## 🔒 Security Practices
-
-- JWT tokens with expiry (24h default)
-- CORS restricted to frontend origin
-- Environment variables for all secrets
-- Token interceptor with auto-logout on 401
-- Upstox tokens stored server-side only
-- No client-side API key exposure
-
----
-
-## 🗺️ Roadmap
-
-- [x] **Phase 1** — Foundation + Holdings Dashboard
-- [ ] **Phase 2** — Live market data (WebSocket)
-- [ ] **Phase 3** — Orders & Positions
-- [ ] **Phase 4** — Watchlist & Alerts
-- [ ] **Phase 5** — Advanced Analytics
+## 🔐 Upstox Developer Setup
+To connect real data, you need to register an app on Upstox:
+1. Go to the [Upstox Developer Portal](https://developer.upstox.com/).
+2. Create a new App named **TradeNova**.
+3. Set the Redirect URI exactly to: `http://localhost:3000/auth/callback`
+4. Put your local IP (`127.0.0.1` or your public IP) in the Primary IP field.
+5. Copy the generated API Key and API Secret to your `.env` files.
 
 ---
 
 ## 📝 License
-
-Private — All rights reserved.
+This project is for educational and personal use. Ensure you follow Upstox's API terms of service when deploying to production.

@@ -23,7 +23,7 @@ export interface NavItem {
 export const NAV_ITEMS: NavItem[] = [
   {
     title: "Dashboard",
-    href: "/",
+    href: "/dashboard",
     icon: LayoutDashboard,
     active: true,
   },
@@ -37,28 +37,25 @@ export const NAV_ITEMS: NavItem[] = [
     title: "Orders",
     href: "/orders",
     icon: ArrowLeftRight,
-    active: false,
-    badge: "Soon",
+    active: true,
   },
   {
     title: "Positions",
     href: "/positions",
     icon: Target,
-    active: false,
-    badge: "Soon",
+    active: true,
   },
   {
     title: "Watchlist",
     href: "/watchlist",
     icon: Eye,
-    active: false,
-    badge: "Soon",
+    active: true,
   },
   {
     title: "Settings",
     href: "/settings",
     icon: Settings,
-    active: false,
+    active: true,
   },
 ];
 

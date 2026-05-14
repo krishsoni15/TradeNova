@@ -11,19 +11,23 @@ import { Separator } from "@/components/ui/separator";
  * Login page
  * Upstox OAuth login with premium glassmorphism card design
  */
-export default function LoginPage() {
-  /** Redirect to Upstox OAuth */
-  const handleUpstoxLogin = () => {
-    const baseUrl = "https://api.upstox.com/v2/login/authorization/dialog";
-    const params = new URLSearchParams({
-      response_type: "code",
-      client_id: process.env.NEXT_PUBLIC_UPSTOX_API_KEY || "your-api-key",
-      redirect_uri:
-        process.env.NEXT_PUBLIC_UPSTOX_REDIRECT_URI ||
-        "http://localhost:3000/auth/callback",
-    });
-    window.location.href = `${baseUrl}?${params.toString()}`;
-  };
+  import { useState } from "react";
+  import { authService } from "@/services/auth.service";
+
+  export default function LoginPage() {
+    const [isLoading, setIsLoading] = useState(false);
+
+    /** Fetch auth URL from backend and redirect */
+    const handleUpstoxLogin = async () => {
+      try {
+        setIsLoading(true);
+        const url = await authService.getUpstoxAuthUrl();
+        if (url) window.location.href = url;
+      } catch (error) {
+        console.error("Failed to get auth URL:", error);
+        setIsLoading(false);
+      }
+    };
 
   const features = [
     {
@@ -94,11 +98,12 @@ export default function LoginPage() {
           {/* CTA Button */}
           <Button
             onClick={handleUpstoxLogin}
+            disabled={isLoading}
             className="w-full h-11 gap-2 bg-primary text-primary-foreground hover:bg-primary/90 glow-primary font-semibold"
             size="lg"
           >
-            Connect with Upstox
-            <ArrowRight className="h-4 w-4" />
+            {isLoading ? "Connecting..." : "Connect with Upstox"}
+            {!isLoading && <ArrowRight className="h-4 w-4" />}
           </Button>
 
           {/* Disclaimer */}

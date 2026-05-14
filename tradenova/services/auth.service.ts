@@ -31,15 +31,8 @@ export const authService = {
   /**
    * Generate Upstox OAuth URL
    */
-  getUpstoxAuthUrl(): string {
-    const baseUrl = "https://api.upstox.com/v2/login/authorization/dialog";
-    const params = new URLSearchParams({
-      response_type: "code",
-      client_id: process.env.NEXT_PUBLIC_UPSTOX_API_KEY || "",
-      redirect_uri:
-        process.env.NEXT_PUBLIC_UPSTOX_REDIRECT_URI ||
-        "http://localhost:3000/auth/callback",
-    });
-    return `${baseUrl}?${params.toString()}`;
+  async getUpstoxAuthUrl(): Promise<string> {
+    const { data } = await apiClient.get<{ url: string }>("/auth/upstox/login");
+    return data.url;
   },
 };
