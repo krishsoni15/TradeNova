@@ -2,7 +2,6 @@
 
 import { useState, useMemo, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { motion } from "framer-motion";
 import { PortfolioSummary } from "@/components/dashboard/portfolio-summary";
 import { HoldingsTable } from "@/components/dashboard/holdings-table";
 import { HoldingsSkeleton } from "@/components/dashboard/holdings-skeleton";
@@ -50,13 +49,9 @@ function HoldingsPageContent() {
   const lossCount = data?.holdings.filter((h) => h.pnl < 0).length ?? 0;
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5 animate-fade-in">
       {/* Header */}
-      <motion.div
-        className="flex items-center justify-between"
-        initial={{ opacity: 0, y: -8 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
+      <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold text-foreground">Holdings</h1>
           <p className="text-xs text-muted-foreground mt-0.5">
@@ -73,7 +68,7 @@ function HoldingsPageContent() {
           <RefreshCw className={cn("h-3 w-3", isRefetching && "animate-spin")} />
           Refresh
         </Button>
-      </motion.div>
+      </div>
 
       {isLoading ? (
         <HoldingsSkeleton />
@@ -110,9 +105,9 @@ function HoldingsPageContent() {
                   )}
                 >
                   {f === "all" ? "All" : f === "profit" ? (
-                    <span className="flex items-center gap-1"><TrendingUp className="w-3 h-3" /> Gainers</span>
+                    <span className="flex items-center gap-1"><TrendingUp className="w-3.5 h-3.5" /> Gainers</span>
                   ) : (
-                    <span className="flex items-center gap-1"><TrendingDown className="w-3 h-3" /> Losers</span>
+                    <span className="flex items-center gap-1"><TrendingDown className="w-3.5 h-3.5" /> Losers</span>
                   )}
                 </button>
               ))}

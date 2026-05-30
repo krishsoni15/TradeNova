@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { Menu, Bell, Search, CircleDot, LogIn } from "lucide-react";
+import { Menu, Search, CircleDot, LogIn } from "lucide-react";
 import { useSidebar } from "@/hooks/use-sidebar";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,7 +17,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useAuthStore } from "@/stores/auth-store";
 import { useMarketQuotes } from "@/hooks/use-market-data";
 import { WATCHLIST_SYMBOLS } from "@/services/market.service";
-import { Settings, Key, User, TrendingUp, TrendingDown } from "lucide-react";
+import { Settings, User, TrendingUp, TrendingDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
@@ -31,20 +31,38 @@ export function TopNavbar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const { quotes } = useMarketQuotes(WATCHLIST_SYMBOLS);
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Filter stocks based on search query — uses REAL market data
-  const searchResults = useMemo(() => {
-    const q = searchQuery.trim().toUpperCase();
-    if (!q || q.length < 1) return [];
-    return quotes
-      .filter((s) => s.symbol.includes(q) || s.displayName.toUpperCase().includes(q))
-      .slice(0, 6);
-  }, [searchQuery, quotes]);
+  // Fetch live search results from API with debounce
+  useEffect(() => {
+    const q = searchQuery.trim();
+    if (q.length < 2) {
+      setSearchResults([]);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      setIsSearching(true);
+      try {
+        const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
+        if (res.ok) {
+          const data = await res.json();
+          setSearchResults(data.results || []);
+        }
+      } catch (err) {
+        console.error("Search error:", err);
+      } finally {
+        setIsSearching(false);
+      }
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,33 +99,43 @@ export function TopNavbar() {
           />
 
           {/* Live search dropdown */}
-          {isSearchFocused && searchResults.length > 0 && (
+          {isSearchFocused && (searchQuery.length >= 2) && (
             <div className="absolute top-full left-0 w-full mt-1.5 bg-card border border-border/50 shadow-xl rounded-lg overflow-hidden z-50">
-              {searchResults.map((stock) => {
-                const isUp = stock.changePercent >= 0;
-                return (
-                  <button
-                    key={stock.symbol}
-                    onClick={() => {
-                      router.push(`/holdings?q=${encodeURIComponent(stock.symbol)}`);
-                      setIsSearchFocused(false);
-                      setSearchQuery("");
-                    }}
-                    className="w-full flex items-center justify-between px-3 py-2.5 hover:bg-accent/40 transition-colors text-left"
-                  >
-                    <div>
-                      <div className="text-sm font-semibold text-foreground">{stock.symbol}</div>
-                      <div className="text-[11px] text-muted-foreground">{stock.displayName}</div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-sm font-medium tabular-nums">₹{stock.price.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</div>
-                      <div className={cn("text-[11px] font-semibold tabular-nums", isUp ? "text-profit" : "text-loss")}>
-                        {isUp ? "+" : ""}{stock.changePercent.toFixed(2)}%
+              {isSearching ? (
+                <div className="p-3 text-sm text-center text-muted-foreground animate-pulse">Searching live market...</div>
+              ) : searchResults.length > 0 ? (
+                searchResults.map((stock) => {
+                  const isUp = stock.changePercent >= 0;
+                  return (
+                    <button
+                      key={stock.symbol}
+                      onMouseDown={(e) => {
+                        e.preventDefault(); // Prevent blur before click fires
+                        // Open the trade terminal for this specific stock
+                        router.push(`/dashboard?trade=${encodeURIComponent(stock.symbol)}`);
+                        setIsSearchFocused(false);
+                        setSearchQuery("");
+                      }}
+                      className="w-full flex items-center justify-between px-3 py-2.5 hover:bg-accent/40 transition-colors text-left"
+                    >
+                      <div>
+                        <div className="text-sm font-semibold text-foreground flex items-center gap-1.5">
+                          {stock.symbol} <span className="text-[9px] font-bold bg-muted px-1 py-0.5 rounded text-muted-foreground">{stock.exchange}</span>
+                        </div>
+                        <div className="text-[11px] text-muted-foreground truncate max-w-[200px]">{stock.displayName}</div>
                       </div>
-                    </div>
-                  </button>
-                );
-              })}
+                      <div className="text-right">
+                        <div className="text-sm font-medium tabular-nums">₹{stock.price.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</div>
+                        <div className={cn("text-[11px] font-semibold tabular-nums", isUp ? "text-profit" : "text-loss")}>
+                          {isUp ? "+" : ""}{stock.changePercent.toFixed(2)}%
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })
+              ) : (
+                <div className="p-3 text-sm text-center text-muted-foreground">No stocks found</div>
+              )}
             </div>
           )}
         </form>

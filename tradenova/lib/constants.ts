@@ -1,10 +1,7 @@
 import {
   LayoutDashboard,
   Briefcase,
-  ArrowLeftRight,
   Target,
-  Eye,
-  Settings,
   type LucideIcon,
 } from "lucide-react";
 
@@ -34,27 +31,9 @@ export const NAV_ITEMS: NavItem[] = [
     active: true,
   },
   {
-    title: "Orders",
-    href: "/orders",
-    icon: ArrowLeftRight,
-    active: true,
-  },
-  {
     title: "Positions",
     href: "/positions",
     icon: Target,
-    active: true,
-  },
-  {
-    title: "Watchlist",
-    href: "/watchlist",
-    icon: Eye,
-    active: true,
-  },
-  {
-    title: "Settings",
-    href: "/settings",
-    icon: Settings,
     active: true,
   },
 ];
@@ -75,21 +54,4 @@ export const formatPercentage = (value: number): string => {
   return `${sign}${value.toFixed(2)}%`;
 };
 
-/** Number formatter with commas */
-export const formatNumber = (value: number): string => {
-  return new Intl.NumberFormat("en-IN").format(value);
-};
 
-/** Determine P&L color class */
-export const getPnlColor = (value: number): string => {
-  if (value > 0) return "text-profit";
-  if (value < 0) return "text-loss";
-  return "text-muted-foreground";
-};
-
-/** Determine P&L background class */
-export const getPnlBg = (value: number): string => {
-  if (value > 0) return "bg-profit-bg";
-  if (value < 0) return "bg-loss-bg";
-  return "bg-muted/50";
-};

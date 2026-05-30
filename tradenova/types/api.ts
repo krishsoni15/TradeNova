@@ -10,19 +10,4 @@ export interface ApiResponse<T> {
   timestamp: string;
 }
 
-/** Paginated response */
-export interface PaginatedResponse<T> {
-  items: T[];
-  total: number;
-  page: number;
-  per_page: number;
-  total_pages: number;
-}
 
-/** API error response */
-export interface ApiError {
-  status: "error";
-  message: string;
-  code?: string;
-  details?: Record<string, string[]>;
-}

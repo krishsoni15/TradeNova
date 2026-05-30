@@ -4,35 +4,69 @@ import type { ApiResponse } from "@/types/api";
 
 /**
  * Authentication service
- * Handles Upstox OAuth flow and user profile
+ * All API calls go to Next.js API routes (same origin) — no external backend needed.
  */
 export const authService = {
   /**
-   * Exchange Upstox authorization code for JWT token
+   * Exchange Upstox authorization code for JWT token.
+   * POST /api/v1/auth/upstox/callback
    */
   async loginWithUpstox(payload: UpstoxCallbackPayload): Promise<AuthResponse> {
-    const { data } = await apiClient.post<ApiResponse<AuthResponse>>(
-      "/auth/upstox/callback",
-      payload
-    );
-    return data.data;
+    try {
+      const { data } = await apiClient.post<ApiResponse<AuthResponse>>(
+        "/auth/upstox/callback",
+        payload
+      );
+      return data.data;
+    } catch (error: any) {
+      const message =
+        error.response?.data?.detail ||
+        error.response?.data?.message ||
+        error.message ||
+        "Login failed";
+      console.error("[Auth] loginWithUpstox failed:", message);
+      throw new Error(message);
+    }
   },
 
   /**
-   * Get current user profile
+   * Get current user profile.
+   * GET /api/v1/auth/me
    */
   async getProfile(): Promise<AuthResponse["user"]> {
-    const { data } = await apiClient.get<ApiResponse<AuthResponse["user"]>>(
-      "/auth/me"
-    );
-    return data.data;
+    try {
+      const { data } = await apiClient.get<ApiResponse<AuthResponse["user"]>>(
+        "/auth/me"
+      );
+      return data.data;
+    } catch (error: any) {
+      const message =
+        error.response?.data?.detail ||
+        error.message ||
+        "Failed to fetch profile";
+      console.error("[Auth] getProfile failed:", message);
+      throw new Error(message);
+    }
   },
 
   /**
-   * Generate Upstox OAuth URL
+   * Generate Upstox OAuth URL.
+   * GET /api/v1/auth/upstox/login
    */
   async getUpstoxAuthUrl(): Promise<string> {
-    const { data } = await apiClient.get<{ url: string }>("/auth/upstox/login");
-    return data.url;
+    try {
+      const { data } = await apiClient.get<{ url: string }>(
+        "/auth/upstox/login"
+      );
+      return data.url;
+    } catch (error: any) {
+      const message =
+        error.response?.data?.detail ||
+        error.response?.data?.error ||
+        error.message ||
+        "Failed to get auth URL";
+      console.error("[Auth] getUpstoxAuthUrl failed:", message);
+      throw new Error(message);
+    }
   },
 };

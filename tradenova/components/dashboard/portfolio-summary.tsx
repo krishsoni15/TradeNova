@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { IndianRupee, PieChart, BarChart3, Activity } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatCurrency, formatPercentage } from "@/lib/constants";
@@ -22,16 +21,13 @@ export function PortfolioSummary({ summary }: PortfolioSummaryProps) {
   ];
 
   return (
-    <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">
-      {cards.map((card, i) => {
+    <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 animate-fade-in">
+      {cards.map((card) => {
         const isProfit = card.value >= 0;
         return (
-          <motion.div
+          <div
             key={card.title}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.06 }}
-            className="bg-card/60 border border-border/40 rounded-xl p-4"
+            className="bg-card/60 border border-border/40 rounded-xl p-4 transition-all duration-200 hover:border-border/70 hover:shadow-md"
           >
             <div className="flex items-center justify-between mb-2">
               <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">{card.title}</span>
@@ -51,7 +47,7 @@ export function PortfolioSummary({ summary }: PortfolioSummaryProps) {
             {card.sub && (
               <span className="text-[11px] text-muted-foreground">{card.sub}</span>
             )}
-          </motion.div>
+          </div>
         );
       })}
     </div>

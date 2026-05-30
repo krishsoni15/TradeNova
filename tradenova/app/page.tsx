@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils";
  */
 const GridBackground = () => {
   const lines = Array.from({ length: 20 });
-  
+
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 bg-[#060608]">
       {/* Vertical Tracks */}
@@ -31,7 +31,7 @@ const GridBackground = () => {
           const delay1 = (i % 5) * 1.2;
           const duration2 = 5 + (i % 3) * 2;
           const delay2 = (i % 6) * 1.5;
-          
+
           return (
             <div key={i} className="relative w-[1px] h-full bg-white/[0.04]">
               {/* Green Laser Packets */}
@@ -56,10 +56,10 @@ const GridBackground = () => {
           );
         })}
       </div>
-      
+
       {/* Central Horizon Glow */}
       <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-[#10b981]/5 rounded-[100%] blur-[120px] pointer-events-none mix-blend-screen" />
-      
+
       {/* Deep Edge Masks */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_120%_100%_at_50%_0%,transparent_30%,#060608_100%)] z-10" />
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#060608] z-10" />
@@ -96,132 +96,132 @@ const HeroVisuals = () => {
               <div className="w-3 h-3 rounded-full bg-green-500/80 shadow-[0_0_8px_rgba(34,197,94,0.8)]" />
             </div>
             <div className="mx-auto w-96 h-8 bg-white/5 rounded-full flex items-center px-3 border border-white/5 shadow-inner">
-               <Search className="w-3.5 h-3.5 text-muted-foreground mr-2 shrink-0" />
-               <span className="text-[11px] text-muted-foreground/80 flex-1 truncate">Search instruments, algos, or symbols...</span>
-               <div className="shrink-0 flex items-center gap-1">
-                 <span className="text-[9px] bg-white/10 px-1.5 py-0.5 rounded text-muted-foreground font-mono">⌘</span>
-                 <span className="text-[9px] bg-white/10 px-1.5 py-0.5 rounded text-muted-foreground font-mono">K</span>
-               </div>
+              <Search className="w-3.5 h-3.5 text-muted-foreground mr-2 shrink-0" />
+              <span className="text-[11px] text-muted-foreground/80 flex-1 truncate">Search instruments, algos, or symbols...</span>
+              <div className="shrink-0 flex items-center gap-1">
+                <span className="text-[9px] bg-white/10 px-1.5 py-0.5 rounded text-muted-foreground font-mono">⌘</span>
+                <span className="text-[9px] bg-white/10 px-1.5 py-0.5 rounded text-muted-foreground font-mono">K</span>
+              </div>
             </div>
             <div className="w-10 shrink-0" />
           </div>
-        {/* Mock Content */}
-        <div className="p-6 grid grid-cols-3 gap-6">
-          <div className="col-span-2 space-y-6">
-            {/* Animated Laser Chart Area */}
-            <div className="h-48 bg-gradient-to-tr from-primary/5 to-transparent border border-primary/20 rounded-xl p-4 flex items-end relative overflow-hidden shadow-[inset_0_0_20px_rgba(16,185,129,0.05)]">
-              <div className="absolute inset-0 bg-primary/5 animate-pulse-soft mix-blend-screen" />
-              <svg viewBox="0 0 100 40" className="w-full h-32 relative z-10 preserve-3d">
-                <defs>
-                  <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#10b981" stopOpacity="0.4" />
-                    <stop offset="100%" stopColor="#10b981" stopOpacity="0" />
-                  </linearGradient>
-                  <filter id="glow">
-                    <feGaussianBlur stdDeviation="1.5" result="coloredBlur" />
-                    <feMerge>
-                      <feMergeNode in="coloredBlur" />
-                      <feMergeNode in="SourceGraphic" />
-                    </feMerge>
-                  </filter>
-                </defs>
-                {/* Area Fill */}
-                <motion.path
-                  d="M 0 40 L 0 35 L 10 25 L 20 28 L 30 15 L 40 20 L 50 5 L 60 12 L 70 8 L 80 18 L 90 2 L 100 10 L 100 40 Z"
-                  fill="url(#chartGradient)"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 1, delay: 0.5 }}
-                />
-                {/* Laser Line */}
-                <motion.path
-                  d="M 0 35 L 10 25 L 20 28 L 30 15 L 40 20 L 50 5 L 60 12 L 70 8 L 80 18 L 90 2 L 100 10"
-                  className="stroke-primary stroke-[1.5] fill-none"
-                  filter="url(#glow)"
-                  initial={{ pathLength: 0 }}
-                  animate={{ pathLength: 1 }}
-                  transition={{ duration: 2.5, ease: "easeInOut", repeat: Infinity, repeatType: "loop", repeatDelay: 1.5 }}
-                />
-                {/* Moving Dot */}
-                <motion.circle
-                  r="1.5"
-                  className="fill-white"
-                  filter="url(#glow)"
-                  initial={{ cx: 0, cy: 35 }}
-                  animate={{
-                    cx: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
-                    cy: [35, 25, 28, 15, 20, 5, 12, 8, 18, 2, 10]
-                  }}
-                  transition={{ duration: 2.5, ease: "linear", repeat: Infinity, repeatDelay: 1.5 }}
-                />
-              </svg>
+          {/* Mock Content */}
+          <div className="p-6 grid grid-cols-3 gap-6">
+            <div className="col-span-2 space-y-6">
+              {/* Animated Laser Chart Area */}
+              <div className="h-48 bg-gradient-to-tr from-primary/5 to-transparent border border-primary/20 rounded-xl p-4 flex items-end relative overflow-hidden shadow-[inset_0_0_20px_rgba(16,185,129,0.05)]">
+                <div className="absolute inset-0 bg-primary/5 animate-pulse-soft mix-blend-screen" />
+                <svg viewBox="0 0 100 40" className="w-full h-32 relative z-10 preserve-3d">
+                  <defs>
+                    <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#10b981" stopOpacity="0.4" />
+                      <stop offset="100%" stopColor="#10b981" stopOpacity="0" />
+                    </linearGradient>
+                    <filter id="glow">
+                      <feGaussianBlur stdDeviation="1.5" result="coloredBlur" />
+                      <feMerge>
+                        <feMergeNode in="coloredBlur" />
+                        <feMergeNode in="SourceGraphic" />
+                      </feMerge>
+                    </filter>
+                  </defs>
+                  {/* Area Fill */}
+                  <motion.path
+                    d="M 0 40 L 0 35 L 10 25 L 20 28 L 30 15 L 40 20 L 50 5 L 60 12 L 70 8 L 80 18 L 90 2 L 100 10 L 100 40 Z"
+                    fill="url(#chartGradient)"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1, delay: 0.5 }}
+                  />
+                  {/* Laser Line */}
+                  <motion.path
+                    d="M 0 35 L 10 25 L 20 28 L 30 15 L 40 20 L 50 5 L 60 12 L 70 8 L 80 18 L 90 2 L 100 10"
+                    className="stroke-primary stroke-[1.5] fill-none"
+                    filter="url(#glow)"
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ duration: 2.5, ease: "easeInOut", repeat: Infinity, repeatType: "loop", repeatDelay: 1.5 }}
+                  />
+                  {/* Moving Dot */}
+                  <motion.circle
+                    r="1.5"
+                    className="fill-white"
+                    filter="url(#glow)"
+                    initial={{ cx: 0, cy: 35 }}
+                    animate={{
+                      cx: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+                      cy: [35, 25, 28, 15, 20, 5, 12, 8, 18, 2, 10]
+                    }}
+                    transition={{ duration: 2.5, ease: "linear", repeat: Infinity, repeatDelay: 1.5 }}
+                  />
+                </svg>
+              </div>
+
+              {/* Animated Equalizer/Bar Charts */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="h-24 bg-white/5 border border-white/5 rounded-xl flex items-end p-3 gap-2 overflow-hidden">
+                  {[40, 70, 45, 90, 65, 80].map((h, i) => (
+                    <motion.div
+                      key={i}
+                      className="w-full bg-primary/40 rounded-t-sm"
+                      initial={{ height: "10%" }}
+                      animate={{ height: [`${h}%`, `${h - 20}%`, `${h}%`] }}
+                      transition={{ duration: 2 + i * 0.2, repeat: Infinity, ease: "easeInOut" }}
+                    />
+                  ))}
+                </div>
+                <div className="h-24 bg-white/5 border border-white/5 rounded-xl flex items-end p-3 gap-2 overflow-hidden">
+                  {[60, 30, 85, 50, 75, 40].map((h, i) => (
+                    <motion.div
+                      key={i}
+                      className="w-full bg-blue-500/40 rounded-t-sm"
+                      initial={{ height: "10%" }}
+                      animate={{ height: [`${h}%`, `${h + 20}%`, `${h}%`] }}
+                      transition={{ duration: 2.5 + i * 0.2, repeat: Infinity, ease: "easeInOut" }}
+                    />
+                  ))}
+                </div>
+              </div>
             </div>
 
-            {/* Animated Equalizer/Bar Charts */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="h-24 bg-white/5 border border-white/5 rounded-xl flex items-end p-3 gap-2 overflow-hidden">
-                {[40, 70, 45, 90, 65, 80].map((h, i) => (
+            {/* Animated Feed / Order Book */}
+            <div className="space-y-4">
+              {[
+                { symbol: "RELIANCE", price: "2,845.20", change: "+1.2%", up: true, volume: 85 },
+                { symbol: "HDFCBANK", price: "1,642.10", change: "-0.4%", up: false, volume: 60 },
+                { symbol: "TCS", price: "4,120.55", change: "+0.8%", up: true, volume: 40 },
+                { symbol: "INFY", price: "1,450.00", change: "-1.1%", up: false, volume: 90 },
+              ].map((stock, i) => (
+                <motion.div
+                  key={i}
+                  className="h-[68px] bg-white/5 border border-white/5 rounded-xl flex items-center p-3 gap-3 relative overflow-hidden"
+                  whileHover={{ scale: 1.02, backgroundColor: "rgba(255,255,255,0.08)" }}
+                >
+                  {/* Background volume bar */}
                   <motion.div
-                    key={i}
-                    className="w-full bg-primary/40 rounded-t-sm"
-                    initial={{ height: "10%" }}
-                    animate={{ height: [`${h}%`, `${h - 20}%`, `${h}%`] }}
-                    transition={{ duration: 2 + i * 0.2, repeat: Infinity, ease: "easeInOut" }}
+                    className={`absolute top-0 right-0 h-full ${stock.up ? 'bg-green-500/5' : 'bg-red-500/5'} z-0`}
+                    initial={{ width: "0%" }}
+                    animate={{ width: `${stock.volume}%` }}
+                    transition={{ duration: 1.5, ease: "easeOut", delay: i * 0.1 }}
                   />
-                ))}
-              </div>
-              <div className="h-24 bg-white/5 border border-white/5 rounded-xl flex items-end p-3 gap-2 overflow-hidden">
-                {[60, 30, 85, 50, 75, 40].map((h, i) => (
-                  <motion.div
-                    key={i}
-                    className="w-full bg-blue-500/40 rounded-t-sm"
-                    initial={{ height: "10%" }}
-                    animate={{ height: [`${h}%`, `${h + 20}%`, `${h}%`] }}
-                    transition={{ duration: 2.5 + i * 0.2, repeat: Infinity, ease: "easeInOut" }}
-                  />
-                ))}
-              </div>
+
+                  <div className={`relative z-10 w-8 h-8 shrink-0 rounded-full ${stock.up ? 'bg-green-500/20 text-green-500 shadow-[0_0_10px_rgba(34,197,94,0.2)]' : 'bg-red-500/20 text-red-500 shadow-[0_0_10px_rgba(239,68,68,0.2)]'} flex items-center justify-center text-xs font-bold`}>
+                    {stock.up ? '↑' : '↓'}
+                  </div>
+                  <div className="relative z-10 flex-1 flex justify-between items-center">
+                    <div>
+                      <div className="text-xs font-bold text-white/90">{stock.symbol}</div>
+                      <div className={`text-[10px] ${stock.up ? 'text-green-400' : 'text-red-400'}`}>{stock.change}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xs font-mono text-white/90 tabular-nums">₹{stock.price}</div>
+                      <div className="text-[9px] text-muted-foreground/60">Vol: {stock.volume}k</div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
             </div>
           </div>
-
-          {/* Animated Feed / Order Book */}
-          <div className="space-y-4">
-            {[
-              { symbol: "RELIANCE", price: "2,845.20", change: "+1.2%", up: true, volume: 85 },
-              { symbol: "HDFCBANK", price: "1,642.10", change: "-0.4%", up: false, volume: 60 },
-              { symbol: "TCS", price: "4,120.55", change: "+0.8%", up: true, volume: 40 },
-              { symbol: "INFY", price: "1,450.00", change: "-1.1%", up: false, volume: 90 },
-            ].map((stock, i) => (
-              <motion.div
-                key={i}
-                className="h-[68px] bg-white/5 border border-white/5 rounded-xl flex items-center p-3 gap-3 relative overflow-hidden"
-                whileHover={{ scale: 1.02, backgroundColor: "rgba(255,255,255,0.08)" }}
-              >
-                {/* Background volume bar */}
-                <motion.div 
-                  className={`absolute top-0 right-0 h-full ${stock.up ? 'bg-green-500/5' : 'bg-red-500/5'} z-0`}
-                  initial={{ width: "0%" }}
-                  animate={{ width: `${stock.volume}%` }}
-                  transition={{ duration: 1.5, ease: "easeOut", delay: i * 0.1 }}
-                />
-                
-                <div className={`relative z-10 w-8 h-8 shrink-0 rounded-full ${stock.up ? 'bg-green-500/20 text-green-500 shadow-[0_0_10px_rgba(34,197,94,0.2)]' : 'bg-red-500/20 text-red-500 shadow-[0_0_10px_rgba(239,68,68,0.2)]'} flex items-center justify-center text-xs font-bold`}>
-                  {stock.up ? '↑' : '↓'}
-                </div>
-                <div className="relative z-10 flex-1 flex justify-between items-center">
-                  <div>
-                    <div className="text-xs font-bold text-white/90">{stock.symbol}</div>
-                    <div className={`text-[10px] ${stock.up ? 'text-green-400' : 'text-red-400'}`}>{stock.change}</div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-xs font-mono text-white/90 tabular-nums">₹{stock.price}</div>
-                    <div className="text-[9px] text-muted-foreground/60">Vol: {stock.volume}k</div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
         </motion.div>
       </motion.div>
 

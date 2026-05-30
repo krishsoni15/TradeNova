@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
 import {
   ArrowUpDown,
   TrendingUp,
@@ -24,36 +23,12 @@ import { formatCurrency, formatPercentage } from "@/lib/constants";
 import { EmptyState } from "@/components/shared/empty-state";
 import type { Holding } from "@/types/holdings";
 
-/**
- * Holdings data table
- * Professional trading terminal table with:
- * - Sortable columns
- * - Color-coded P&L
- * - Row hover effects
- * - Framer Motion row entrance
- * - Responsive design
- */
-
 interface HoldingsTableProps {
   holdings: Holding[];
 }
 
 type SortField = "tradingsymbol" | "current_value" | "pnl" | "pnl_percentage" | "day_change_percentage";
 type SortDirection = "asc" | "desc";
-
-/** Animation variants for table rows */
-const rowVariants = {
-  hidden: { opacity: 0, x: -10 },
-  show: (i: number) => ({
-    opacity: 1,
-    x: 0,
-    transition: {
-      delay: i * 0.03,
-      duration: 0.3,
-      ease: [0.25, 0.1, 0.25, 1] as const,
-    },
-  }),
-} satisfies import("framer-motion").Variants;
 
 export function HoldingsTable({ holdings }: HoldingsTableProps) {
   const [sortField, setSortField] = useState<SortField>("current_value");
@@ -125,7 +100,7 @@ export function HoldingsTable({ holdings }: HoldingsTableProps) {
   }
 
   return (
-    <Card className="border-border/50 bg-card/50 backdrop-blur-sm overflow-hidden">
+    <Card className="border-border/50 bg-card/50 backdrop-blur-sm overflow-hidden animate-fade-in">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -183,20 +158,15 @@ export function HoldingsTable({ holdings }: HoldingsTableProps) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {sorted.map((holding, i) => {
+              {sorted.map((holding) => {
                 const isProfit = holding.pnl >= 0;
                 const isDayProfit = holding.day_change >= 0;
 
                 return (
-                  <motion.tr
+                  <TableRow
                     key={holding.tradingsymbol}
-                    custom={i}
-                    variants={rowVariants}
-                    initial="hidden"
-                    animate="show"
                     className={cn(
-                      "group border-border/30 transition-colors",
-                      "hover:bg-white/5"
+                      "group border-border/30 transition-colors hover:bg-white/5"
                     )}
                   >
                     {/* Stock name + symbol */}
@@ -277,7 +247,7 @@ export function HoldingsTable({ holdings }: HoldingsTableProps) {
                       </div>
                     </TableCell>
 
-                    {/* Quick Actions (visible on hover) */}
+                    {/* Quick Actions */}
                     <TableCell className="text-right py-2">
                       <div className="flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                         <Button size="sm" variant="outline" className="h-7 w-7 p-0 bg-transparent border-profit/30 text-profit hover:bg-profit/10 hover:text-profit">
@@ -288,7 +258,7 @@ export function HoldingsTable({ holdings }: HoldingsTableProps) {
                         </Button>
                       </div>
                     </TableCell>
-                  </motion.tr>
+                  </TableRow>
                 );
               })}
             </TableBody>

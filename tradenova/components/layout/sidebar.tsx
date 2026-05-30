@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
 import {
   ChevronLeft,
   Zap,
@@ -18,24 +17,36 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Separator } from "@/components/ui/separator";
+import { useMarketQuotes } from "@/hooks/use-market-data";
 
 /**
  * Desktop sidebar navigation
- * Glassmorphism design with animated active states
- * Collapsible to icon-only mode
+ * Collapsible to icon-only mode with pure CSS transitions (no framer-motion dependencies)
  */
 export function Sidebar() {
   const pathname = usePathname();
   const { isCollapsed, toggleCollapse } = useSidebar();
+  const { connectionType } = useMarketQuotes([]); // Just to track global status
+
+  const statusLabel = connectionType === "yahoo" 
+    ? "Market Live" 
+    : connectionType === "simulated" 
+    ? "Simulated Live" 
+    : "Market Offline";
+    
+  const statusSub = connectionType === "yahoo" 
+    ? "Yahoo Finance" 
+    : connectionType === "simulated" 
+    ? "Simulated Feed" 
+    : "Connecting...";
 
   return (
-    <motion.aside
+    <aside
       className={cn(
         "fixed left-0 top-0 z-40 hidden h-screen flex-col border-r border-border/50 bg-sidebar lg:flex",
-        "transition-all duration-300 ease-in-out"
+        "transition-all duration-300 ease-in-out",
+        isCollapsed ? "w-[72px]" : "w-[260px]"
       )}
-      animate={{ width: isCollapsed ? 72 : 260 }}
-      transition={{ duration: 0.3, ease: "easeInOut" }}
     >
       {/* Logo + collapse toggle */}
       <div className="flex h-16 items-center justify-between px-4">
@@ -73,25 +84,12 @@ export function Sidebar() {
               className={cn(
                 "group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200",
                 isActive
-                  ? "text-primary-foreground"
+                  ? "bg-primary/15 text-primary ring-1 ring-primary/25"
                   : "text-muted-foreground hover:text-foreground hover:bg-accent/50",
                 !item.active && "opacity-50 cursor-not-allowed",
                 isCollapsed && "justify-center px-2"
               )}
             >
-              {/* Active indicator background */}
-              {isActive && (
-                <motion.div
-                  className="absolute inset-0 rounded-lg bg-primary/15 ring-1 ring-primary/25"
-                  layoutId="sidebar-active"
-                  transition={{
-                    type: "spring",
-                    stiffness: 350,
-                    damping: 30,
-                  }}
-                />
-              )}
-
               {/* Icon */}
               <item.icon
                 className={cn(
@@ -101,19 +99,11 @@ export function Sidebar() {
               />
 
               {/* Label — hidden when collapsed */}
-              <AnimatePresence mode="wait">
-                {!isCollapsed && (
-                  <motion.span
-                    className="relative z-10 truncate"
-                    initial={{ opacity: 0, width: 0 }}
-                    animate={{ opacity: 1, width: "auto" }}
-                    exit={{ opacity: 0, width: 0 }}
-                    transition={{ duration: 0.15 }}
-                  >
-                    {item.title}
-                  </motion.span>
-                )}
-              </AnimatePresence>
+              {!isCollapsed && (
+                <span className="relative z-10 truncate animate-fade-in">
+                  {item.title}
+                </span>
+              )}
 
               {/* Badge (e.g. "Soon") */}
               {!isCollapsed && item.badge && (
@@ -131,7 +121,9 @@ export function Sidebar() {
           if (isCollapsed) {
             return (
               <Tooltip key={item.href}>
-                <TooltipTrigger>{navContent}</TooltipTrigger>
+                <TooltipTrigger>
+                  {navContent}
+                </TooltipTrigger>
                 <TooltipContent side="right" className="font-medium">
                   {item.title}
                   {item.badge && (
@@ -159,21 +151,24 @@ export function Sidebar() {
           )}
         >
           <div className="relative">
-            <Zap className="h-4 w-4 text-primary" />
-            <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-primary animate-pulse-soft" />
+            <Zap className={cn("h-4 w-4", connectionType === "yahoo" ? "text-profit" : "text-primary")} />
+            <span className={cn(
+              "absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full animate-pulse",
+              connectionType === "yahoo" ? "bg-profit" : connectionType === "simulated" ? "bg-primary" : "bg-muted-foreground"
+            )} />
           </div>
           {!isCollapsed && (
             <div className="min-w-0 flex-1">
               <p className="truncate text-xs font-medium text-foreground">
-                Market Ready
+                {statusLabel}
               </p>
-              <p className="truncate text-[11px] text-muted-foreground">
-                Upstox Connected
+              <p className="truncate text-[11px] text-muted-foreground font-mono">
+                {statusSub}
               </p>
             </div>
           )}
         </div>
       </div>
-    </motion.aside>
+    </aside>
   );
 }

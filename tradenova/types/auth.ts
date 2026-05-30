@@ -7,6 +7,8 @@ export interface User {
   id: string;
   email: string;
   name: string;
+  client_id?: string;
+  upstox_user_id?: string;
   broker_connected: boolean;
   created_at: string;
 }

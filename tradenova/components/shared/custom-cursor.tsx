@@ -1,43 +1,69 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
-/**
- * Global Custom Cursor Component
- * Replaces default cursor with a glowing ring and dot
- */
 export function CustomCursor() {
-  const cursorRef = useRef<HTMLDivElement>(null);
-  const dotRef = useRef<HTMLDivElement>(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isHovering, setIsHovering] = useState(false);
 
   useEffect(() => {
-    const onMouseMove = (e: MouseEvent) => {
-      if (cursorRef.current && dotRef.current) {
-        cursorRef.current.style.left = `${e.clientX}px`;
-        cursorRef.current.style.top = `${e.clientY}px`;
-        dotRef.current.style.left = `${e.clientX}px`;
-        dotRef.current.style.top = `${e.clientY}px`;
+    const updateMousePosition = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+
+    const handleMouseOver = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (
+        target.tagName === "BUTTON" ||
+        target.tagName === "A" ||
+        target.closest("button") ||
+        target.closest("a")
+      ) {
+        setIsHovering(true);
+      } else {
+        setIsHovering(false);
       }
     };
 
-    const onMouseDown = () => cursorRef.current?.classList.add("hovering");
-    const onMouseUp = () => cursorRef.current?.classList.remove("hovering");
-
-    window.addEventListener("mousemove", onMouseMove);
-    window.addEventListener("mousedown", onMouseDown);
-    window.addEventListener("mouseup", onMouseUp);
+    window.addEventListener("mousemove", updateMousePosition);
+    window.addEventListener("mouseover", handleMouseOver);
 
     return () => {
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mousedown", onMouseDown);
-      window.removeEventListener("mouseup", onMouseUp);
+      window.removeEventListener("mousemove", updateMousePosition);
+      window.removeEventListener("mouseover", handleMouseOver);
     };
   }, []);
 
   return (
     <>
-      <div ref={cursorRef} className="custom-cursor hidden md:block" />
-      <div ref={dotRef} className="custom-cursor-dot hidden md:block" />
+      <motion.div
+        className="fixed top-0 left-0 w-4 h-4 bg-primary rounded-full pointer-events-none z-[100] mix-blend-screen hidden md:block"
+        animate={{
+          x: mousePosition.x - 8,
+          y: mousePosition.y - 8,
+          scale: isHovering ? 2.5 : 1,
+          opacity: isHovering ? 0.5 : 1,
+        }}
+        transition={{
+          type: "tween",
+          ease: "backOut",
+          duration: 0.15,
+        }}
+      />
+      <motion.div
+        className="fixed top-0 left-0 w-10 h-10 border border-primary/50 rounded-full pointer-events-none z-[99] hidden md:block"
+        animate={{
+          x: mousePosition.x - 20,
+          y: mousePosition.y - 20,
+          scale: isHovering ? 1.5 : 1,
+        }}
+        transition={{
+          type: "tween",
+          ease: "easeOut",
+          duration: 0.3,
+        }}
+      />
     </>
   );
 }

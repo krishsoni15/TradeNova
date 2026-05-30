@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { type LucideIcon } from "lucide-react";
 
 /**
@@ -16,12 +15,7 @@ interface EmptyStateProps {
 
 export function EmptyState({ icon: Icon, title, description, action }: EmptyStateProps) {
   return (
-    <motion.div
-      className="flex flex-col items-center justify-center py-16 px-4"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
-    >
+    <div className="flex flex-col items-center justify-center py-16 px-4 animate-fade-in">
       <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-muted/50">
         <Icon className="h-8 w-8 text-muted-foreground" />
       </div>
@@ -30,6 +24,6 @@ export function EmptyState({ icon: Icon, title, description, action }: EmptyStat
         {description}
       </p>
       {action}
-    </motion.div>
+    </div>
   );
 }

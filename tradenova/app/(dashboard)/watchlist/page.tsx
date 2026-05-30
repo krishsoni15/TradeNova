@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { Eye, TrendingUp, TrendingDown, Plus, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMarketQuotes } from "@/hooks/use-market-data";
@@ -24,15 +23,15 @@ export default function WatchlistPage() {
   const removeSymbol = (sym: string) => setSymbols((prev) => prev.filter((s) => s !== sym));
 
   return (
-    <div className="space-y-6">
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
+    <div className="space-y-6 animate-fade-in">
+      <div>
         <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
           <Eye className="w-6 h-6 text-primary" /> Watchlist
         </h1>
         <p className="text-sm text-muted-foreground mt-1">
           {symbols.length} stocks • {lastUpdated ? `Live • ${lastUpdated.toLocaleTimeString("en-IN")}` : "Loading..."}
         </p>
-      </motion.div>
+      </div>
 
       {/* Add stock */}
       <div className="flex gap-2">
@@ -58,14 +57,11 @@ export default function WatchlistPage() {
           ? Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className="h-24 rounded-xl bg-muted/30 animate-pulse" />
             ))
-          : quotes.map((q, i) => {
+          : quotes.map((q) => {
               const isUp = q.changePercent >= 0;
               return (
-                <motion.div
+                <div
                   key={q.symbol}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: i * 0.04 }}
                   className={cn(
                     "relative group bg-card/50 border rounded-xl p-4 hover:shadow-lg transition-all cursor-default",
                     isUp ? "border-profit/20 hover:border-profit/40" : "border-loss/20 hover:border-loss/40"
@@ -98,7 +94,7 @@ export default function WatchlistPage() {
                   <div className="mt-2 text-[10px] text-muted-foreground font-mono">
                     H: ₹{q.high.toFixed(2)} • L: ₹{q.low.toFixed(2)} • Vol: {(q.volume / 1_000_000).toFixed(1)}M
                   </div>
-                </motion.div>
+                </div>
               );
             })}
       </div>
